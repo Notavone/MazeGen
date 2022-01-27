@@ -11,9 +11,10 @@ public class Main {
         try {
             do {
                 if(maze.isSolvable()) {
+                    maze.solve();
                     maze.display();
                     maze.save();
-                    Thread.sleep(100);
+                    Thread.sleep(1000);
                 }
                 maze.generate();
             } while (true);

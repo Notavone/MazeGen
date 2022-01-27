@@ -21,6 +21,7 @@ public class Maze {
     private final JFrame jFrame;
     public Cell start;
     public Cell stop;
+    private ArrayList<Cell> visited;
 
     public Maze(int width, int height, Random random) {
         this.width = width;
@@ -94,6 +95,25 @@ public class Maze {
     }
 
     public boolean isSolvable() {
+        this.visited = new ArrayList<>();
+        List<Cell> visitedThisIteration;
+        visited.add(start);
+        do {
+            visitedThisIteration = new ArrayList<>();
+            for (Cell cell : visited) {
+                List<Cell> unvisitedNeighbors = new ArrayList<>();
+                for (Cell c : getNeighbors(cell)) {
+                    if (!visited.contains(c) && !visitedThisIteration.contains(c)) unvisitedNeighbors.add(c);
+                }
+                visitedThisIteration.addAll(unvisitedNeighbors);
+            }
+            visited.addAll(visitedThisIteration);
+        } while (visitedThisIteration.size() > 0);
+        visited.forEach(c -> cells.get(cells.indexOf(c)).setVisited(true));
+        return visited.contains(stop);
+    }
+
+    public void solve() {
         List<Cell> visited = new ArrayList<>();
         visited.add(start);
         List<Path> paths = new ArrayList<>();
@@ -126,8 +146,7 @@ public class Maze {
                     break;
                 } else path.cells.forEach(c -> cells.get(cells.indexOf(c)).setVisited(true));
             }
-            return true;
-        } else return false;
+        }
     }
 
     public void display() {
@@ -137,7 +156,7 @@ public class Maze {
                 panel.add(new JLabel(new ImageIcon(cell.getImage())));
             }
             jFrame.pack();
-            jFrame.setLocationRelativeTo(null);
+//            jFrame.setLocationRelativeTo(null);
         } catch (IOException e) {
             e.printStackTrace();
         }
